@@ -139,14 +139,14 @@ func (l *logger) formatHeader(buf *[]byte, t time.Time, file string, line int) {
 }
 
 func (l *logger) appendLevelAndCleanS(buf *[]byte, s string) string {
-	level := "DEBUG"
+	level := []byte("DEBUG")
 	if s[0:6] == debugIdentifier {
 		s = s[6:len(s)]
 		if string(s[0]) != " " {
-			level += " "
+			level = []byte("DEBUG ")
 		}
 	} else {
-		level = "INFO "
+		level = []byte("INFO ")
 	}
 	*buf = append(*buf, level...)
 	return s
