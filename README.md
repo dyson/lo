@@ -4,7 +4,7 @@
 
 A minimal logger for Go.
 
-Lo is a fork and modification to the official Go flag package (https://golang.org/pkg/flag/). It's retained only the Printf function for writing messages and has added three levels of logging (none, info, and debug). Lo's been influenced by a number of articles, discussion and personal experience.
+Lo is a fork and modification to the official Go log package (https://golang.org/pkg/log/). It's retained only the Printf function for writing messages and has added three levels of logging (none, info, and debug). Lo's been influenced by a number of articles, discussion and personal experience.
 
 Things to note:
 - With the log level set to lo.LevelNone, lo isn't nop. Using a single Printf function this isn't possible but it is minimal. 
