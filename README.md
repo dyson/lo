@@ -17,16 +17,16 @@ Things to note:
 ## Installation
 Using dep for dependency management (https://github.com/golang/dep):
 ```
-dep ensure github.com/dyson/lo
+$ dep ensure github.com/dyson/lo
 ```
 
 Using go get:
-```
+```sh
 $ go get github.com/dyson/lo
 ```
 ## Usage
 
-```
+```go
 package main
 
 import (
@@ -76,14 +76,14 @@ disabled logging:
 
 When passing around the logger you should accept an interface: [(Dave Cheney)](https://dave.cheney.net/2017/01/23/the-package-level-logger-anti-pattern)
 
-```
+```go
 type logger interface {
 	Printf(string, ...interface{})
 }
 ```
 
 Using the logger interface above you can easily implement a nop logger if you want to disable logging:
-```
+```go
 package main
 
 import (
