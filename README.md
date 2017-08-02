@@ -2,7 +2,7 @@
 
 [![license](https://img.shields.io/github/license/dyson/lo.svg)](https://github.com/dyson/lo/blob/master/LICENSE)
 
-A minimal logger for Go
+A minimal logger for Go.
 
 Lo is a fork and modification to the official Go flag package (https://golang.org/pkg/flag/). It's retained only the Printf function for writing messages and has added three levels of logging (none, info, and debug). Lo's been influenced by a number of articles, discussion and personal experience.
 
