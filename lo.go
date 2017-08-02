@@ -39,6 +39,7 @@ const (
 	LevelNone     = 1 << iota
 	LevelInfo
 	LevelDebug
+	debugIdentifier = "debug:"
 )
 
 type Logger interface {
@@ -139,7 +140,7 @@ func (l *logger) formatHeader(buf *[]byte, t time.Time, file string, line int) {
 
 func (l *logger) appendLevelAndCleanS(buf *[]byte, s string) string {
 	level := "DEBUG"
-	if s[0:6] == "debug:" {
+	if s[0:6] == debugIdentifier {
 		s = s[6:len(s)]
 		if string(s[0]) != " " {
 			level += " "
@@ -195,7 +196,7 @@ func (l *logger) Printf(format string, v ...interface{}) {
 		return
 	}
 	if l.level != LevelDebug {
-		if format[0:6] == "debug:" {
+		if format[0:6] == debugIdentifier {
 			return
 		}
 	}
