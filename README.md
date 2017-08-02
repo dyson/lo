@@ -10,7 +10,7 @@ Things to note:
 - With the log level set to lo.LevelNone, lo isn't nop. Using a single Printf function this isn't possible but it is minimal. 
 - With the log level set to info, debug messages aren't nop for the same reason above.
 - INFO and DEBUG are prefixed to the format string for easier log passing.
-- Lo only implements Printf as this is the minimal interface a logger needs. This makes switching out this logger for something else in the event you need a different features easy. [(inspired from discussion)](https://groups.google.com/forum/#!msg/golang-dev/F3l9Iz1JX4g/szAb07lgFAAJ)
+- Lo only implements Printf as this is the minimal interface a logger needs. This makes switching out this logger for something else in the event you need different features easy. [(inspired from discussion)](https://groups.google.com/forum/#!msg/golang-dev/F3l9Iz1JX4g/szAb07lgFAAJ)
 - Lo only has NONE, INFO and DEBUG levels. From experience that's all I use. [(inspired by Dave Cheney)](https://dave.cheney.net/2015/11/05/lets-talk-about-logging)
 - The package level logger has been removed so you need to create a lo logger and pass that around your app. [(inspired by Peter Bourgon)](https://peter.bourgon.org/blog/2017/06/09/theory-of-modern-go.html)
 
