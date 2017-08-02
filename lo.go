@@ -137,17 +137,18 @@ func (l *logger) formatHeader(buf *[]byte, t time.Time, file string, line int) {
 	}
 }
 
-func (l *logger) formatPrefix(format string) string {
-	prefix := "DEBUG"
-	if format[0:6] == "debug:" {
-		format = format[6:len(format)]
-		if string(format[0]) != " " {
-			prefix += " "
+func (l *logger) appendLevelAndCleanS(buf *[]byte, s string) string {
+	level := "DEBUG"
+	if s[0:6] == "debug:" {
+		s = s[6:len(s)]
+		if string(s[0]) != " " {
+			level += " "
 		}
 	} else {
-		prefix = "INFO "
+		level = "INFO "
 	}
-	return prefix + format
+	*buf = append(*buf, level...)
+	return s
 }
 
 // Output writes the output for a logging event. The string s contains
@@ -175,6 +176,7 @@ func (l *logger) Output(calldepth int, s string) error {
 	}
 	l.buf = l.buf[:0]
 	l.formatHeader(&l.buf, now, file, line)
+	s = l.appendLevelAndCleanS(&l.buf, s)
 	l.buf = append(l.buf, s...)
 	if len(s) == 0 || s[len(s)-1] != '\n' {
 		l.buf = append(l.buf, '\n')
@@ -193,11 +195,10 @@ func (l *logger) Printf(format string, v ...interface{}) {
 		return
 	}
 	if l.level != LevelDebug {
-		if format[0:2] == "d:" || format[0:6] == "debug:" {
+		if format[0:6] == "debug:" {
 			return
 		}
 	}
-	format = l.formatPrefix(format)
 	l.Output(2, fmt.Sprintf(format, v...))
 }
 
