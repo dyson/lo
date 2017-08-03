@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"io"
 	"runtime"
+
 	"sync"
 	"time"
 )
@@ -143,7 +144,7 @@ func (l *logger) appendLevelAndCleanS(buf *[]byte, s string) string {
 	if len(s) > 5 {
 		if s[0:6] == debugIdentifier {
 			level = []byte("DEBUG")
-			s = s[6:len(s)]
+			s = s[6:]
 			if string(s[0]) != " " {
 				level = []byte("DEBUG ")
 			}
