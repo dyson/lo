@@ -139,14 +139,15 @@ func (l *logger) formatHeader(buf *[]byte, t time.Time, file string, line int) {
 }
 
 func (l *logger) appendLevelAndCleanS(buf *[]byte, s string) string {
-	level := []byte("DEBUG")
-	if s[0:6] == debugIdentifier {
-		s = s[6:len(s)]
-		if string(s[0]) != " " {
-			level = []byte("DEBUG ")
+	level := []byte("INFO ")
+	if len(s) > 5 {
+		if s[0:6] == debugIdentifier {
+			level = []byte("DEBUG")
+			s = s[6:len(s)]
+			if string(s[0]) != " " {
+				level = []byte("DEBUG ")
+			}
 		}
-	} else {
-		level = []byte("INFO ")
 	}
 	*buf = append(*buf, level...)
 	return s
@@ -196,8 +197,10 @@ func (l *logger) Printf(format string, v ...interface{}) {
 		return
 	}
 	if l.level != LevelDebug {
-		if format[0:6] == debugIdentifier {
-			return
+		if len(format) > 5 {
+			if format[0:6] == debugIdentifier {
+				return
+			}
 		}
 	}
 	l.Output(2, fmt.Sprintf(format, v...))
