@@ -1,5 +1,6 @@
 # Lo
 
+[![Go project version](https://badge.fury.io/go/github.com%2Fdyson%2Flo.svg)](https://badge.fury.io/go/github.com%2Fdyson%2Flo)
 [![Build Status](https://travis-ci.org/dyson/lo.svg?branch=master)](https://travis-ci.org/dyson/lo)
 [![Coverage Status](https://coveralls.io/repos/github/dyson/lo/badge.svg?branch=master)](https://coveralls.io/github/dyson/lo?branch=master)
 [![Code Climate](https://codeclimate.com/github/dyson/lo/badges/gpa.svg)](https://codeclimate.com/github/dyson/lo)
