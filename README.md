@@ -32,6 +32,7 @@ $ go get github.com/dyson/lo
 ```
 ## Usage
 
+### Basic
 ```go
 package main
 
@@ -88,6 +89,7 @@ type logger interface {
 }
 ```
 
+### Nop
 Using the logger interface above you can easily implement a nop logger if you want to disable logging:
 ```go
 package main
