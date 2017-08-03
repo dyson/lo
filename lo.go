@@ -7,7 +7,7 @@
 // Package lo implements a simple logging package. It defines a type, Logger,
 // with methods for formatting output.
 // Every log message is output on a separate line: if the message being
-// printed does not end in a newline, the logger will add one.
+// printed does not end in a newline, the Logger will add one.
 package lo
 
 import (
@@ -36,22 +36,27 @@ const (
 	Llongfile                     // full file name and line number: /a/b/c/d.go:23
 	Lshortfile                    // final file name element and line number: d.go:23. overrides Llongfile
 	LUTC                          // if Ldate or Ltime is set, use UTC rather than the local time zone
-	LstdFlags     = Ldate | Ltime // initial values for the standard logger
-	LevelNone     = 1 << iota
+	LstdFlags     = Ldate | Ltime // initial values for the standard Logger
+)
+
+// These flags define the output level and output identifier
+const (
+	LevelNone = 1 << iota
 	LevelInfo
 	LevelDebug
 	debugIdentifier = "debug:"
 )
 
-type Logger interface {
+// Log is the interface that wraps the basic Printf method.
+type Log interface {
 	Printf(string, ...interface{})
 }
 
-// A logger represents an active logging object that generates lines of
+// A Logger represents an active logging object that generates lines of
 // output to an io.Writer. Each logging operation makes a single call to
-// the Writer's Write method. A logger can be used simultaneously from
+// the Writer's Write method. A Logger can be used simultaneously from
 // multiple goroutines; it guarantees to serialize access to the Writer.
-type logger struct {
+type Logger struct {
 	mu     sync.Mutex // ensures atomic writes; protects the following fields
 	prefix string     // prefix to write at beginning of each line
 	flag   int        // properties
@@ -60,16 +65,17 @@ type logger struct {
 	buf    []byte     // for accumulating text to write
 }
 
-// New creates a new logger. The out variable sets the
+// New creates a new Logger. The out variable sets the
 // destination to which log data will be written.
 // The prefix appears at the beginning of each generated log line.
 // The flag argument defines the logging properties.
-func New(out io.Writer, prefix string, flag int) *logger {
-	return &logger{out: out, prefix: prefix, flag: flag}
+// Be default the output level is set t
+func New(out io.Writer, prefix string, flag int) *Logger {
+	return &Logger{out: out, prefix: prefix, flag: flag, level: LevelInfo}
 }
 
-// SetOutput sets the output destination for the logger.
-func (l *logger) SetOutput(w io.Writer) {
+// SetOutput sets the output destination for the Logger.
+func (l *Logger) SetOutput(w io.Writer) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.out = w
@@ -92,7 +98,7 @@ func itoa(buf *[]byte, i int, wid int) {
 	*buf = append(*buf, b[bp:]...)
 }
 
-func (l *logger) formatHeader(buf *[]byte, t time.Time, file string, line int) {
+func (l *Logger) formatHeader(buf *[]byte, t time.Time, file string, line int) {
 	*buf = append(*buf, l.prefix...)
 	if l.flag&LUTC != 0 {
 		t = t.UTC()
@@ -139,15 +145,13 @@ func (l *logger) formatHeader(buf *[]byte, t time.Time, file string, line int) {
 	}
 }
 
-func (l *logger) appendLevelAndCleanS(buf *[]byte, s string) string {
+func (l *Logger) appendLevelAndCleanS(buf *[]byte, s string) string {
 	level := []byte("INFO ")
-	if len(s) > 5 {
-		if s[0:6] == debugIdentifier {
-			level = []byte("DEBUG")
-			s = s[6:]
-			if string(s[0]) != " " {
-				level = []byte("DEBUG ")
-			}
+	if len(s) > 5 && s[0:6] == debugIdentifier {
+		level = []byte("DEBUG")
+		s = s[6:]
+		if string(s[0]) != " " {
+			level = []byte("DEBUG ")
 		}
 	}
 	*buf = append(*buf, level...)
@@ -156,11 +160,11 @@ func (l *logger) appendLevelAndCleanS(buf *[]byte, s string) string {
 
 // Output writes the output for a logging event. The string s contains
 // the text to print after the prefix specified by the flags of the
-// logger. A newline is appended if the last character of s is not
+// Logger. A newline is appended if the last character of s is not
 // already a newline. Calldepth is used to recover the PC and is
 // provided for generality, although at the moment on all pre-defined
 // paths it will be 2.
-func (l *logger) Output(calldepth int, s string) error {
+func (l *Logger) Output(calldepth int, s string) error {
 	now := time.Now() // get this early.
 	var file string
 	var line int
@@ -188,9 +192,10 @@ func (l *logger) Output(calldepth int, s string) error {
 	return err
 }
 
-// Printf calls l.Output to print to the logger.
+// Printf calls l.Output to print to the Logger.
 // Arguments are handled in the manner of fmt.Printf.
-func (l *logger) Printf(format string, v ...interface{}) {
+// A string starting with "debug:" will be treated as a debug level log message.
+func (l *Logger) Printf(format string, v ...interface{}) {
 	l.mu.Lock()
 	level := l.level
 	l.mu.Unlock()
@@ -198,51 +203,50 @@ func (l *logger) Printf(format string, v ...interface{}) {
 		return
 	}
 	if l.level != LevelDebug {
-		if len(format) > 5 {
-			if format[0:6] == debugIdentifier {
-				return
-			}
+		if len(format) > 5 && format[0:6] == debugIdentifier {
+			return
 		}
 	}
 	l.Output(2, fmt.Sprintf(format, v...))
 }
 
-// Flags returns the output flags for the logger.
-func (l *logger) Flags() int {
+// Flags returns the output flags for the Logger.
+func (l *Logger) Flags() int {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	return l.flag
 }
 
-// SetFlags sets the output flags for the logger.
-func (l *logger) SetFlags(flag int) {
+// SetFlags sets the output flags for the Logger.
+func (l *Logger) SetFlags(flag int) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.flag = flag
 }
 
-func (l *logger) Level() int {
+// Level returns the output level for the Logger.
+func (l *Logger) Level() int {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	return l.level
 }
 
-// SetFlags sets the output flags for the logger.
-func (l *logger) SetLevel(level int) {
+// SetLevel sets the output level for the Logger.
+func (l *Logger) SetLevel(level int) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.level = level
 }
 
-// Prefix returns the output prefix for the logger.
-func (l *logger) Prefix() string {
+// Prefix returns the output prefix for the Logger.
+func (l *Logger) Prefix() string {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	return l.prefix
 }
 
-// SetPrefix sets the output prefix for the logger.
-func (l *logger) SetPrefix(prefix string) {
+// SetPrefix sets the output prefix for the Logger.
+func (l *Logger) SetPrefix(prefix string) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.prefix = prefix

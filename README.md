@@ -5,6 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/dyson/lo/badges/gpa.svg)](https://codeclimate.com/github/dyson/lo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dyson/lo)](https://goreportcard.com/report/github.com/dyson/lo)
 
+[![GoDoc](https://godoc.org/github.com/dyson/lo?status.svg)](http://godoc.org/github.com/dyson/lo)
 [![license](https://img.shields.io/github/license/dyson/lo.svg)](https://github.com/dyson/lo/blob/master/LICENSE)
 
 A minimal logger for Go.
