@@ -47,7 +47,9 @@ const (
 	debugIdentifier = "debug:"
 )
 
-// Log is the interface that wraps the basic Printf method.
+// Log is an example interface that wraps the basic Printf method.
+// You should copy this interface around to avoid tight coupling
+// with this package.
 type Log interface {
 	Printf(string, ...interface{})
 }
