@@ -6,8 +6,6 @@
 
 package lo_test
 
-// These tests are too simple.
-
 import (
 	"bytes"
 	"fmt"
@@ -24,7 +22,7 @@ const (
 	Rdate         = `[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]`
 	Rtime         = `[0-9][0-9]:[0-9][0-9]:[0-9][0-9]`
 	Rmicroseconds = `\.[0-9][0-9][0-9][0-9][0-9][0-9]`
-	Rline         = `(60|82):` // must update if the calls to l.Printf / l.Print below move
+	Rline         = `(58|80):` // must update if the calls to l.Printf / l.Print below move
 	Rlongfile     = `.*/[A-Za-z0-9_\-]+\.go:` + Rline
 	Rshortfile    = `[A-Za-z0-9_\-]+\.go:` + Rline
 )
