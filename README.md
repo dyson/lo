@@ -126,7 +126,7 @@ func main() {
 	if disableLogging {
 		logger = &nopLogger{}
 	} else {
-		logger = lo.New(os.Stdout, "", log.LstdFlags)
+		logger = lo.New(os.Stdout, "", lo.LstdFlags)
 	}
 
 	fmt.Println("\nlo logger:")
