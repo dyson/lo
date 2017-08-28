@@ -39,14 +39,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/dyson/lo"
 )
 
 func main() {
-	logger := lo.New(os.Stdout, "", log.LstdFlags)
+	logger := lo.New(os.Stdout, "", lo.LstdFlags)
 
 	fmt.Println("show only info messages by default:")
 	logger.Printf("info message")
@@ -97,7 +96,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/dyson/lo"
@@ -117,7 +115,7 @@ func main() {
 	if disableLogging {
 		logger = &nopLogger{}
 	} else {
-		logger = lo.New(os.Stdout, "", log.LstdFlags)
+		logger = lo.New(os.Stdout, "", lo.LstdFlags)
 	}
 
 	fmt.Println("nop logger:")
